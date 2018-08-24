@@ -1,0 +1,29 @@
+{
+	"manifest_version": 2,
+	"name": "雪球关键词屏蔽器",
+	"version": "1.0.0",
+    "description": "雪球关键词屏蔽",
+    "icons":
+	{
+		"16": "img/icon.png",
+		"48": "img/icon.png",
+		"128": "img/icon.png"
+    },
+    "browser_action":
+	{
+		"default_icon": "img/icon.png",
+		"default_title": "雪球关键词屏蔽器",
+		"default_popup": "popup.html"
+	},
+	"content_scripts": [
+        {
+            "matches": [
+                "http://xueqiu.com/*",
+                "http://www.xueqiu.com/*",
+                "https://xueqiu.com/*",
+				"https://www.xueqiu.com/*"
+            ],
+            "js": ["js/xq.js"]
+        }
+    ]
+}
