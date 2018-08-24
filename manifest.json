@@ -9,11 +9,19 @@
 		"48": "img/icon.png",
 		"128": "img/icon.png"
     },
-    "browser_action":
+    "page_action":
 	{
 		"default_icon": "img/icon.png",
 		"default_title": "雪球关键词屏蔽器",
 		"default_popup": "popup.html"
+    },
+    "permissions": [
+        "declarativeContent",
+        "storage"
+    ],
+    "background":
+	{
+		"scripts": ["js/background.js"]
 	},
 	"content_scripts": [
         {
