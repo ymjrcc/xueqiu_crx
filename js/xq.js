@@ -5,17 +5,19 @@ console.log('雪球屏蔽器启动！');
 // });
 
 let itemCount = 0;
+const articles = document.getElementsByClassName("timeline__item");
 
 setInterval(() => {
-	const articles = document.getElementsByClassName("timeline__item");
-	const contents = [...articles].map(node => node.getElementsByClassName("content--description")[0]);
-	const texts = contents.map(node => node.querySelector("div")).map(node => node.textContent);
-	const filter = [];
-	if(texts.length===itemCount){
+	if(articles.length===itemCount){
 		console.log('没有加载新内容');
 		return;
 	}
-	itemCount = texts.length;
+	itemCount = articles.length;
+
+	const contents = document.getElementsByClassName("content--description");
+	const texts = [...contents].map(node => node.querySelector("div")).map(node => node.textContent);
+	
+	const filter = [];
 	texts.forEach((item, index) => {
 		// chrome.storage.sync.get(null, function(items) {
 		// 	if(item.keywords && item.keywords.length>0){
@@ -32,6 +34,9 @@ setInterval(() => {
 			filter.push({index, item});
 		}
 	});
-	console.log(itemCount, filter);
+
 	filter.forEach(i => articles[i.index].style.display="none");
+
+	console.log(itemCount, filter);
+
 }, 1000);	
