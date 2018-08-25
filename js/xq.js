@@ -2,9 +2,7 @@ console.log('雪球关键词屏蔽器启动！');
 
 //监听从 popup 发来的消息
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
-
-	console.log('收到新的关键词列表', request.value);
-
+	// console.log('收到新的关键词列表', request.value);
 	//将 popup 传来的消息存入本地存储中
 	localStorage.setItem("xq_crx_keywords", JSON.stringify(request.value));
 
@@ -31,8 +29,12 @@ const doFilter = () => {//执行过滤函数
 	
 	const filter = [];
 	const keywords = JSON.parse(localStorage.getItem("xq_crx_keywords"));
-	console.log(keywords);
+	// console.log(keywords);
 
+	//初始化消息块
+	[...articles].map(i => i.style.display="block");
+
+	//如果没有关键词，不进行操作
 	if(!keywords || keywords.length===0)return;
 
 	texts.forEach((item, index) => {
@@ -46,7 +48,7 @@ const doFilter = () => {//执行过滤函数
 	//将需要过滤的信息块隐藏
 	filter.forEach(i => articles[i.index].style.display="none");
 
-	console.log(itemCount, filter);
+	// console.log(itemCount, filter);
 }
 
 setInterval(() => {
@@ -56,13 +58,13 @@ setInterval(() => {
 		ls: localStorage.getItem("xq_crx_keywords")
 	}, function(response) {
 		if(response){
-			console.log('收到来自后台的回复：' + response);
+			// console.log('收到来自后台的回复：' + response);
 		}
 	});
 
 	//如果信息块总数不变，不执行操作
 	if(articles.length===itemCount){
-		console.log('没有加载新内容');
+		// console.log('没有加载新内容');
 		return;
 	}
 	//否则执行一次过滤

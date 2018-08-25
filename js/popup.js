@@ -1,3 +1,4 @@
+//渲染关键词列表
 function renderList(keywords){
     if(Array.isArray(keywords) && keywords.length>0 && keywords[0]!==""){
         const list = keywords.map(word => `<li>${word}</li>`).join("");
@@ -13,7 +14,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
         //如果已经有 localStorage 就不用传了
         return;
     }
-    console.log('收到来自content-script的消息：');
+    // console.log('收到来自content-script的消息：');
     localStorage.setItem("keywords", request.ls);
     const keywords = JSON.parse(request.ls);
     renderList(keywords);
@@ -22,13 +23,14 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 
 
 const keywords = localStorage.getItem("keywords")?JSON.parse(localStorage.getItem("keywords")):[];
-console.log(keywords);
+// console.log(keywords);
 renderList(keywords);
 
 const addBtn = document.getElementById("add");
 const input = document.getElementById("input");
 const ul = document.getElementById("ul");
 
+//封装传递函数
 function sendMessageToContentScript(message, callback){
 	chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
 		chrome.tabs.sendMessage(tabs[0].id, message, function(response){
@@ -37,38 +39,53 @@ function sendMessageToContentScript(message, callback){
 	});
 }
 
-addBtn.addEventListener("click", function(){
-
+//添加关键词
+function addWord(){
     const newWord = input.value;
     const keywords = localStorage.getItem("keywords")?JSON.parse(localStorage.getItem("keywords")):[];
-
+    
     if(newWord && keywords.findIndex(item => item === newWord) === -1){//有值且不和已有的重复
-
-        const newKeywords = [newWord, ...keywords];
+    
+        const newKeywords = [...keywords, newWord];
         renderList(newKeywords);
         localStorage.setItem("keywords", JSON.stringify(newKeywords));
         input.value = "";
-
+    
+        //将新关键词列表传递给 content-script
         sendMessageToContentScript({value: newKeywords}, function(response){
-            console.log('来自content的回复：'+response);
+            // console.log('来自content的回复：'+response);
         });     
-
     }
+}
+
+addBtn.addEventListener("click", function(){
+    addWord();
 });
 
+document.onkeyup = function (e) {
+    const code = e.charCode || e.keyCode;
+    if (code == 13) {
+        //敲回车后
+        addWord();
+    }
+}
+
+//取消对某个关键词的屏蔽
 ul.addEventListener("click", function(e){
+    //事件委托
     if(e.target.tagName==='LI'){
         const word = e.target.textContent;
         const keywords = localStorage.getItem("keywords")?JSON.parse(localStorage.getItem("keywords")):[];
+
+        //重新生成关键词列表
         const newKeywords = keywords.filter(i => i!==word);
-        console.log(newKeywords);
+        // console.log(newKeywords);
         renderList(newKeywords);
         localStorage.setItem("keywords", JSON.stringify(newKeywords));
 
+        //将新关键词列表传递给 content-script
         sendMessageToContentScript({value: newKeywords}, function(response){
-            console.log('来自content的回复：'+response);
+            // console.log('来自content的回复：'+response);
         });
-        
-        document.getElementById("delTip").innerText = '删除屏蔽词后请刷新页面获取最新数据！';
     }
 })
