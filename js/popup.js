@@ -1,7 +1,9 @@
 function renderList(keywords){
     if(Array.isArray(keywords) && keywords.length>0 && keywords[0]!==""){
-        const list = keywords.map(i => `<li>${i}</li>`).join("");
+        const list = keywords.map(word => `<li>${word}</li>`).join("");
         document.getElementById("ul").innerHTML = list;
+    }else{
+        document.getElementById("ul").innerHTML = "";
     }
 }
 
@@ -25,6 +27,7 @@ renderList(keywords);
 
 const addBtn = document.getElementById("add");
 const input = document.getElementById("input");
+const ul = document.getElementById("ul");
 
 function sendMessageToContentScript(message, callback){
 	chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
@@ -38,7 +41,7 @@ addBtn.addEventListener("click", function(){
 
     const newWord = input.value;
     const keywords = localStorage.getItem("keywords")?JSON.parse(localStorage.getItem("keywords")):[];
-    
+
     if(newWord && keywords.findIndex(item => item === newWord) === -1){//有值且不和已有的重复
 
         const newKeywords = [newWord, ...keywords];
@@ -52,3 +55,20 @@ addBtn.addEventListener("click", function(){
 
     }
 });
+
+ul.addEventListener("click", function(e){
+    if(e.target.tagName==='LI'){
+        const word = e.target.textContent;
+        const keywords = localStorage.getItem("keywords")?JSON.parse(localStorage.getItem("keywords")):[];
+        const newKeywords = keywords.filter(i => i!==word);
+        console.log(newKeywords);
+        renderList(newKeywords);
+        localStorage.setItem("keywords", JSON.stringify(newKeywords));
+
+        sendMessageToContentScript({value: newKeywords}, function(response){
+            console.log('来自content的回复：'+response);
+        });
+        
+        document.getElementById("delTip").innerText = '删除屏蔽词后请刷新页面获取最新数据！';
+    }
+})

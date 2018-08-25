@@ -40,16 +40,26 @@
             padding-bottom: 5px;
         }
 
+        .delTip{
+            color: red;
+            padding-bottom: 5px;
+        }
+
         .ul{
-            padding-left: 20px;
-            height: 200px;
+            padding-top: 5px;
+            height: 150px;
             overflow: auto;
         }
 
         .ul li{
+            margin: 5px;
+            padding: 2px 5px;
+            display: inline-block;
+            list-style-type: none;
+            border: 1px solid #ddd;
+            border-radius: 5px;
             font-size: 14px;
             color: #666;
-            margin-bottom: 5px;
             cursor: pointer;
         }
     </style>
@@ -63,6 +73,7 @@
         <div class="tip">
             已添加屏蔽词：（点击屏蔽词可删除）
         </div>
+        <div id="delTip" class="delTip"></div>
         <ul id="ul" class="ul">
         </ul>
     </div>

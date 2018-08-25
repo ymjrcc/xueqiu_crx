@@ -22,7 +22,7 @@ const articles = document.getElementsByClassName("timeline__item");//信息块�
 const doFilter = () => {//执行过滤函数
 
 	itemCount = articles.length;
-	
+
 	const texts = [...articles].map(article => {//每条信息块的文本格式
 		const content = article.querySelectorAll(".content--description div");
 		const text = [...content].map(div => div.textContent).join(" ");
@@ -32,6 +32,8 @@ const doFilter = () => {//执行过滤函数
 	const filter = [];
 	const keywords = JSON.parse(localStorage.getItem("xq_crx_keywords"));
 	console.log(keywords);
+
+	if(!keywords || keywords.length===0)return;
 
 	texts.forEach((item, index) => {
 		const reg = new RegExp(keywords.join("|"));
