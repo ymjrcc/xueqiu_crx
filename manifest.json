@@ -26,10 +26,10 @@
 	"content_scripts": [
         {
             "matches": [
-                "http://xueqiu.com/*",
-                "http://www.xueqiu.com/*",
-                "https://xueqiu.com/*",
-				"https://www.xueqiu.com/*"
+                "http://xueqiu.com/",
+                "http://www.xueqiu.com/",
+                "https://xueqiu.com/",
+				"https://www.xueqiu.com/"
             ],
             "js": ["js/xq.js"]
         }

@@ -1,15 +1,16 @@
-console.log('雪球屏蔽器启动！');
+console.log('雪球关键词屏蔽器启动！');
 
 //监听从 popup 发来的消息
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
-	if(request.cmd == 'send'){
-		console.log(request.value);
-		//将 popup 传来的消息存入本地存储中
-		localStorage.setItem("xq_crx_keywords", JSON.stringify(request.value));
-		//执行一次过滤操作
-		doFilter();	
-	}
+
 	console.log('收到新的关键词列表', request.value);
+
+	//将 popup 传来的消息存入本地存储中
+	localStorage.setItem("xq_crx_keywords", JSON.stringify(request.value));
+
+	//执行一次过滤操作
+	doFilter();	
+
 	//告诉 popup 收到消息
 	sendResponse('我收到了你的消息！');
 });
@@ -21,8 +22,12 @@ const articles = document.getElementsByClassName("timeline__item");//信息块�
 const doFilter = () => {//执行过滤函数
 
 	itemCount = articles.length;
-	const contents = document.getElementsByClassName("content--description");
-	const texts = [...contents].map(node => node.querySelector("div")).map(node => node.textContent);//文本列表
+	
+	const texts = [...articles].map(article => {//每条信息块的文本格式
+		const content = article.querySelectorAll(".content--description div");
+		const text = [...content].map(div => div.textContent).join(" ");
+		return text;
+	})
 	
 	const filter = [];
 	const keywords = JSON.parse(localStorage.getItem("xq_crx_keywords"));
@@ -43,6 +48,16 @@ const doFilter = () => {//执行过滤函数
 }
 
 setInterval(() => {
+
+	//向 popup 传入初始化 localStorage
+	chrome.runtime.sendMessage({
+		ls: localStorage.getItem("xq_crx_keywords")
+	}, function(response) {
+		if(response){
+			console.log('收到来自后台的回复：' + response);
+		}
+	});
+
 	//如果信息块总数不变，不执行操作
 	if(articles.length===itemCount){
 		console.log('没有加载新内容');
@@ -50,4 +65,4 @@ setInterval(() => {
 	}
 	//否则执行一次过滤
 	doFilter();
-}, 500);	
+}, 1000);	

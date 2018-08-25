@@ -7,19 +7,65 @@
             padding: 0;
         }
 
-        body{
-            width: 500px;
+        .root{
+            width: 270px;
+            padding: 10px 20px 20px;
+        }
+
+        .inputRow{
+            padding-bottom: 10px;
+        }
+
+        .inputRow input{
+            width: 200px;
+            height: 25px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            margin-right: 10px;
+            padding-left: 5px;
+        }
+
+        .inputRow button{
+            width: 50px;
+            height: 25px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            color: #fff;
+            background-color: rgba(44,102,180,0.9);
+            cursor: pointer;
+        }
+
+        .tip{
+            color: #999;
+            padding-bottom: 5px;
+        }
+
+        .ul{
+            padding-left: 20px;
             height: 200px;
+            overflow: auto;
+        }
+
+        .ul li{
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 5px;
+            cursor: pointer;
         }
     </style>
 </head>
 <body>
-    <div>
-        <input id="input"/>
-        <button id="add">添加</button>
+    <div class="root">
+        <div class="inputRow">
+            <input id="input"/>
+            <button id="add">添加</button>
+        </div>
+        <div class="tip">
+            已添加屏蔽词：（点击屏蔽词可删除）
+        </div>
+        <ul id="ul" class="ul">
+        </ul>
     </div>
-    <ul id="ul">
-    </ul>
     <script src="js/popup.js">
         
     </script>
