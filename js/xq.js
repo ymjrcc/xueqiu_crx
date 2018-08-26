@@ -3,14 +3,25 @@ console.log('雪球关键词屏蔽器启动！');
 //监听从 popup 发来的消息
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 	// console.log('收到新的关键词列表', request.value);
-	//将 popup 传来的消息存入本地存储中
-	localStorage.setItem("xq_crx_keywords", JSON.stringify(request.value));
-
-	//执行一次过滤操作
-	doFilter();	
-
-	//告诉 popup 收到消息
-	sendResponse('我收到了你的消息！');
+	if(request.cmd==='keywordsChange'){
+		//将 popup 传来的消息存入本地存储中
+		localStorage.setItem("xq_crx_keywords", JSON.stringify(request.value));
+		//执行一次过滤操作
+		doFilter();	
+		//告诉 popup 收到消息
+		sendResponse('keywordsChange received!');
+	}else if(request.cmd==='init'){
+		//向 popup 传入初始化 localStorage
+		if(localStorage.getItem("xq_crx_keywords")){
+			chrome.runtime.sendMessage({
+				ls: localStorage.getItem("xq_crx_keywords")
+			}, function(response) {
+				if(response){
+					// console.log('收到来自后台的回复：' + response);
+				}
+			});
+		}
+	}
 });
 
 
@@ -52,19 +63,8 @@ const doFilter = () => {//执行过滤函数
 }
 
 setInterval(() => {
-
-	//向 popup 传入初始化 localStorage
-	chrome.runtime.sendMessage({
-		ls: localStorage.getItem("xq_crx_keywords")
-	}, function(response) {
-		if(response){
-			// console.log('收到来自后台的回复：' + response);
-		}
-	});
-
 	//如果信息块总数不变，不执行操作
 	if(articles.length===itemCount){
-		// console.log('没有加载新内容');
 		return;
 	}
 	//否则执行一次过滤

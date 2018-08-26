@@ -14,7 +14,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
         //如果已经有 localStorage 就不用传了
         return;
     }
-    // console.log('收到来自content-script的消息：');
     localStorage.setItem("keywords", request.ls);
     const keywords = JSON.parse(request.ls);
     renderList(keywords);
@@ -23,7 +22,6 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 
 
 const keywords = localStorage.getItem("keywords")?JSON.parse(localStorage.getItem("keywords")):[];
-// console.log(keywords);
 renderList(keywords);
 
 const addBtn = document.getElementById("add");
@@ -39,6 +37,11 @@ function sendMessageToContentScript(message, callback){
 	});
 }
 
+//初始化，通知 content-script 传递初始化数据过来
+sendMessageToContentScript({cmd: 'init'}, function(response){
+    console.log('收到了来自content的 init 数据：'+response);
+}); 
+
 //添加关键词
 function addWord(){
     const newWord = input.value;
@@ -52,7 +55,7 @@ function addWord(){
         input.value = "";
     
         //将新关键词列表传递给 content-script
-        sendMessageToContentScript({value: newKeywords}, function(response){
+        sendMessageToContentScript({cmd: 'keywordsChange', value: newKeywords}, function(response){
             // console.log('来自content的回复：'+response);
         });     
     }
@@ -64,8 +67,7 @@ addBtn.addEventListener("click", function(){
 
 document.onkeyup = function (e) {
     const code = e.charCode || e.keyCode;
-    if (code == 13) {
-        //敲回车后
+    if (code == 13) {//敲回车后
         addWord();
     }
 }
@@ -79,12 +81,11 @@ ul.addEventListener("click", function(e){
 
         //重新生成关键词列表
         const newKeywords = keywords.filter(i => i!==word);
-        // console.log(newKeywords);
         renderList(newKeywords);
         localStorage.setItem("keywords", JSON.stringify(newKeywords));
 
         //将新关键词列表传递给 content-script
-        sendMessageToContentScript({value: newKeywords}, function(response){
+        sendMessageToContentScript({cmd: 'keywordsChange', value: newKeywords}, function(response){
             // console.log('来自content的回复：'+response);
         });
     }
