@@ -1,0 +1,55 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+.root{
+    width: 270px;
+    padding: 10px 20px 20px;
+}
+
+.inputRow{
+    padding-bottom: 10px;
+}
+
+.inputRow input{
+    width: 200px;
+    height: 25px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    margin-right: 10px;
+    padding-left: 5px;
+}
+
+.inputRow button{
+    width: 50px;
+    height: 25px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    color: #fff;
+    background-color: rgba(44,102,180,0.9);
+    cursor: pointer;
+}
+
+.tip{
+    color: #888;
+    padding-bottom: 5px;
+}
+
+.ul{
+    padding-top: 5px;
+    height: 150px;
+    overflow: auto;
+}
+
+.ul li{
+    margin: 5px;
+    padding: 2px 5px;
+    display: inline-block;
+    list-style-type: none;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 14px;
+    color: #666;
+    cursor: pointer;
+}

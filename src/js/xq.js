@@ -40,7 +40,7 @@ const doFilter = () => {//执行过滤函数
 	
 	const filter = [];
 	const keywords = JSON.parse(localStorage.getItem("xq_crx_keywords"));
-	// console.log(keywords);
+	console.log(keywords);
 
 	//初始化消息块
 	[...articles].map(i => i.style.display="block");
@@ -59,7 +59,7 @@ const doFilter = () => {//执行过滤函数
 	//将需要过滤的信息块隐藏
 	filter.forEach(i => articles[i.index].style.display="none");
 
-	// console.log(itemCount, filter);
+	console.log(itemCount, filter);
 }
 
 setInterval(() => {
