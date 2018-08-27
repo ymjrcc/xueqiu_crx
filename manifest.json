@@ -1,8 +1,8 @@
 {
 	"manifest_version": 2,
-	"name": "雪球关键词屏蔽器",
+	"name": "雪球神器",
 	"version": "1.0.0",
-    "description": "雪球关键词屏蔽",
+    "description": "雪球关键词屏蔽、模块改造，为你打造一个干净清爽的雪球",
     "icons":
 	{
 		"16": "src/img/icon.png",
@@ -12,7 +12,7 @@
     "page_action":
 	{
 		"default_icon": "src/img/icon.png",
-		"default_title": "雪球关键词屏蔽器",
+		"default_title": "雪球神器",
 		"default_popup": "src/popup.html"
     },
     "permissions": [
