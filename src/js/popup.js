@@ -1,3 +1,11 @@
+/*
+ * @Author: Yiming
+ * @Date: 2018-08-27 13:43:45
+ * @LastEditors: Yiming
+ * @LastEditTime: 2018-08-27 13:45:43
+ * @Description: 
+ */
+
 //渲染关键词列表
 function renderList(keywords){
     if(Array.isArray(keywords) && keywords.length>0 && keywords[0]!==""){

@@ -1,3 +1,11 @@
+/*
+ * @Author: Yiming
+ * @Date: 2018-08-27 13:45:35
+ * @LastEditors: Yiming
+ * @LastEditTime: 2018-08-27 13:45:35
+ * @Description: 
+ */
+
 console.log('雪球关键词屏蔽器启动！');
 
 //声明各种变量
@@ -35,14 +43,19 @@ const doFilter = () => {//定义过滤函数
 	itemCount = articles.length;
 
 	const texts = [...articles].map(article => {//每条信息块的文本格式
-		const content = article.querySelectorAll(".content--description div");
-		const text = [...content].map(div => div.textContent).join(" ");
+		let text;
+		const content_detail = article.querySelectorAll(".content--detail div");
+		if(content_detail.length>0){//如果有详情，取详情文字
+			text = [...content_detail].map(div => div.textContent).join(" ");
+		}else{//如果没有，取摘要文字
+			const content_description = article.querySelectorAll(".content--description div");
+			text = [...content_description].map(div => div.textContent).join(" ");
+		}
 		return text;
-	})
+	});
 	
 	const filter = [];
 	const keywords = JSON.parse(localStorage.getItem("xq_crx_keywords"));
-	console.log(keywords);
 
 	//初始化消息块
 	[...articles].map(i => i.style.display="block");
@@ -50,31 +63,39 @@ const doFilter = () => {//定义过滤函数
 	//如果没有关键词，不进行操作
 	if(!keywords || keywords.length===0)return;
 
-	texts.forEach((item, index) => {
+	texts.forEach((text, index) => {
 		const reg = new RegExp(keywords.join("|"));
-		if(reg.test(item)){
+		if(reg.test(text)){
 			//收集需要过滤的信息块序号
-			filter.push({index, item});
+			filter.push({index, text});
 		}
 	});
 
 	//将需要过滤的信息块隐藏
 	filter.forEach(i => articles[i.index].style.display="none");
 
-	console.log(itemCount, filter);
+	console.log(`屏蔽关键词：${keywords.join(", ")}`);
+	console.log(`一共 ${itemCount} 条，已屏蔽 ${filter.length} 条。已屏蔽内容详情如下：`)
+	console.log(filter);	
 }
 
 const doUnfold = () => {//定义展开函数
 	if(true){//如果设置了自动展开
-		[...detailList].forEach(i => i.style.display = 'block');
+		[...detailList].forEach(i => {
+			i.style.display = 'block';
+			const descrList = i.parentNode.getElementsByClassName("content--description");//信息块摘要
+			[...descrList].forEach(i => i.style.display = 'none');
+		});
 		[...unfoldCtrList].forEach(i => {
 			i.style.display = 'block';
 			i.click();
 		});
-		[...descrList].forEach(i => i.style.display = 'none');
 	}else{//否则
-		[...descrList].forEach(i => i.style.display = 'block');
-		[...detailList].forEach(i => i.style.display = 'none');
+		[...detailList].forEach(i => {
+			i.style.display = 'none';
+			const descrList = i.parentNode.getElementsByClassName("content--description");//信息块摘要
+			[...descrList].forEach(i => i.style.display = 'block');
+		});
 	}
 }
 
@@ -126,7 +147,7 @@ document.querySelector('.info-report-wrap').style.display = "none";
 document.querySelector('.snbim-mainview-wrap').style.display = "none";
 
 //底栏
-document.querySelector('.footer').style.display = "none";
+document.querySelector('.footer').style.visibility = "hidden";//display none 会把返回顶部按钮干掉
 
 //左边栏
 document.querySelector('.user__col--lf').style.visibility = "hidden";
