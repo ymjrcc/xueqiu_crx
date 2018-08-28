@@ -11,29 +11,35 @@ console.log('雪球关键词屏蔽器启动！');
 //声明各种变量
 let itemCount = 0; //前个瞬间信息块个数
 const articles = document.getElementsByClassName("timeline__item");//信息块个数
-const descrList = document.getElementsByClassName("content--description");//信息块摘要
 const detailList = document.getElementsByClassName("content--detail");//信息块全文
 const unfoldCtrList = document.getElementsByClassName("timeline__unfold__control");//信息块展开按钮
 
-//监听从 popup 发来的消息
+//监听从 popup 发来的消息，根据消息类型，执行不同的操作
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
-	// console.log('收到新的关键词列表', request.value);
-	if(request.cmd==='init'){//向 popup 传入初始化 localStorage
-		if(localStorage.getItem("xq_crx_keywords")){
-			chrome.runtime.sendMessage({
-				ls: localStorage.getItem("xq_crx_keywords")
-			}, function(response) {
-				if(response){
-					// console.log('收到来自后台的回复：' + response);
-				}
-			});
-		}
-	}else if(request.cmd==='keywordsChange'){//将 popup 传来的关键词数组存入本地存储中
+	if(request.cmd==='init'){//点开 popup，会向 content-script 发送一个 init 信息
+		const keywords = localStorage.getItem("xq_crx_keywords")?JSON.parse(localStorage.getItem("xq_crx_keywords")):[];
+		//给 popup 发送信息
+		chrome.runtime.sendMessage({//向 popup 传入初始化 localStorage
+			keywords,
+			//...
+			//...
+			//...
+		}, function(response) {
+			if(response){
+				console.log('收到来自 popup 的回复：' + response);
+			}
+		});
+		sendResponse('init code received!');
+	}else if(request.cmd==='keywordsChange'){//关键词列表更新后，将 popup 传来的 关键词数组 存入本地存储中
 		localStorage.setItem("xq_crx_keywords", JSON.stringify(request.value));
 		//执行一次过滤操作
 		doFilter();	
 		//告诉 popup 收到消息
 		sendResponse('keywordsChange received!');
+	}else if(request.cmd==='moduleConfigChange'){//模块配置信息更新后，将 popup 传来的 模块配置信息 存入本地存储中
+
+	}else if(request.cmd==='unfoldChange'){//是否展开更新后，将 popup 传来的 是否展开 存入本地存储中
+
 	}
 });
 
