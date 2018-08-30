@@ -1,17 +1,28 @@
-/*
- * @Author: Yiming
- * @Date: 2018-08-27 13:43:45
- * @LastEditors: Yiming
- * @LastEditTime: 2018-08-27 13:45:43
- * @Description: 
- */
 
  //声明各种变量
 const addBtn = document.getElementById("add");
 const input = document.getElementById("input");
 const ul = document.getElementById("ul");
 
-const popup = {};//初始化全局变量，用于存储数据，popup 里的数据都从这里取
+const business = document.getElementById("business");//开户链接
+const today_topic = document.getElementById("today-topic");//开户链接
+const talks_list = document.getElementById("talks-list");//开户链接
+const stock_hot = document.getElementById("stock-hot");//开户链接
+const most_profitable = document.getElementById("most-profitable");//开户链接
+const fund_hot_list = document.getElementById("fund-hot-list");//开户链接
+const recommend_user = document.getElementById("recommend-user");//开户链接
+const reward = document.getElementById("reward");//开户链接
+const other_service = document.getElementById("other-service");//开户链接
+const info_report = document.getElementById("info-report");//开户链接
+const snbim_mainview = document.getElementById("snbim-mainview");//开户链接
+// const footer = document.getElementById("footer");//开户链接
+// const left = document.getElementById("left-col");//开户链接
+const right = document.getElementById("right-col");//开户链接
+
+//初始化全局变量，用于存储数据，popup 里的数据都从这里取
+const popup = {
+    keywords: [],//关键词
+};
 
  //封装传递函数
 function sendMessageToContentScript(message, callback){
@@ -80,10 +91,28 @@ sendMessageToContentScript({cmd: 'init'}, function(response){
 
 //接收 content-script 传来的 本地存储数据 并初始化
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
+    sendResponse('我是 popup，我已收到你的消息：' + JSON.stringify(request));
     console.log('init data');
+
+    //渲染关键词列表
     popup.keywords = request.keywords;
     renderList(popup.keywords);
-    sendResponse('我是 popup，我已收到你的消息：' + JSON.stringify(request));
+
+    //渲染模块屏蔽配置
+     business.checked = !!(request.business==="hide");
+     today_topic.checked = !!(request.today_topic==="hide");
+     talks_list.checked = !!(request.talks_list==="hide");
+     stock_hot.checked = !!(request.stock_hot==="hide");
+     most_profitable.checked = !!(request.most_profitable==="hide");
+     fund_hot_list.checked = !!(request.fund_hot_list==="hide");
+     recommend_user.checked = !!(request.recommend_user==="hide");
+     reward.checked = !!(request.reward==="hide");
+     other_service.checked = !!(request.other_service==="hide");
+     info_report.checked = !!(request.info_report==="hide");
+     snbim_mainview.checked = !!(request.snbim_mainview==="hide");
+    //  footer.checked = !!(request.footer==="hide");
+    //  left.checked = !!(request.left==="hide");
+     right.checked = !!(request.right==="hide");
 });
 
 //事件监听 - 添加关键词
@@ -98,3 +127,31 @@ document.onkeyup = function (e) {//敲回车添加关键词
 
 //事件监听 - 取消对某个关键词的屏蔽
 ul.addEventListener("click", removeWord);
+
+const moduleEventCallback = (e, cmd) => {
+    const type = "module";
+    const value = e.target.checked?"hide":"show";
+    sendMessageToContentScript({ type, cmd, value }, function(response){
+        // console.log('来自content的回复：'+response);
+    });
+}
+
+//事件监听 - 模块屏蔽
+[
+    {element: business, cmd: "business"},
+    {element: today_topic, cmd: "today_topic"},
+    {element: talks_list, cmd: "talks_list"},
+    {element: stock_hot, cmd: "stock_hot"},
+    {element: most_profitable, cmd: "most_profitable"},
+    {element: fund_hot_list, cmd: "fund_hot_list"},
+    {element: recommend_user, cmd: "recommend_user"},
+    {element: reward, cmd: "reward"},
+    {element: other_service, cmd: "other_service"},
+    {element: info_report, cmd: "info_report"},
+    {element: snbim_mainview, cmd: "snbim_mainview"},
+    // {element: footer, cmd: "footer"},
+    // {element: left, cmd: "left"},
+    {element: right, cmd: "right"},
+].forEach(item => {
+    item.element.addEventListener("click", e => moduleEventCallback(e, item.cmd));
+});
