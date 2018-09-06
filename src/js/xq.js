@@ -48,6 +48,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 			// left: localStorage.getItem("xq_crx_left"),//左边栏
 			right: localStorage.getItem("xq_crx_right"),//右边栏
 
+			unfold: localStorage.getItem("xq_crx_unfold"),//是否展开全文
+
 		}, function(response) {
 			if(response){
 				console.log('收到来自 popup 的回复：' + response);
@@ -68,6 +70,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 		const m = moduleData.find(item => request.cmd===item.cmd);
 
 		m && showOrHide(m.ls, m.className);
+	}else if(request.cmd==="unfold"){
+		const flag = request.value;
+		localStorage.setItem("xq_crx_unfold", flag);
+		doUnfold(flag);
 	}
 });
 
@@ -115,8 +121,8 @@ const doFilter = () => {//定义过滤函数
 	console.log(filter);	
 }
 
-const doUnfold = () => {//定义展开函数
-	if(true){//如果设置了自动展开
+const doUnfold = (flag) => {//定义展开函数
+	if(flag==="unfold"){//如果设置了自动展开，全部展开
 		[...detailList].forEach(i => {
 			i.style.display = 'block';
 			const descrList = i.parentNode.getElementsByClassName("content--description");//信息块摘要
@@ -126,7 +132,7 @@ const doUnfold = () => {//定义展开函数
 			i.style.display = 'block';
 			i.click();
 		});
-	}else{//否则
+	}else{//否则，全部折叠
 		[...detailList].forEach(i => {
 			i.style.display = 'none';
 			const descrList = i.parentNode.getElementsByClassName("content--description");//信息块摘要
@@ -142,7 +148,7 @@ setInterval(() => {
 	}
 	//否则执行一次过滤和展开判断
 	doFilter();
-	doUnfold();
+	doUnfold(localStorage.getItem("xq_crx_unfold"));
 }, 1000);
 
 

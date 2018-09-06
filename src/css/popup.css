@@ -55,6 +55,8 @@
 
 .ul{
     min-height: 50px;
+    max-height: 200px;
+    overflow: auto;
 }
 
 .ul li{

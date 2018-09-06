@@ -4,20 +4,22 @@ const addBtn = document.getElementById("add");
 const input = document.getElementById("input");
 const ul = document.getElementById("ul");
 
-const business = document.getElementById("business");//开户链接
-const today_topic = document.getElementById("today-topic");//开户链接
-const talks_list = document.getElementById("talks-list");//开户链接
-const stock_hot = document.getElementById("stock-hot");//开户链接
-const most_profitable = document.getElementById("most-profitable");//开户链接
-const fund_hot_list = document.getElementById("fund-hot-list");//开户链接
-const recommend_user = document.getElementById("recommend-user");//开户链接
-const reward = document.getElementById("reward");//开户链接
-const other_service = document.getElementById("other-service");//开户链接
-const info_report = document.getElementById("info-report");//开户链接
-const snbim_mainview = document.getElementById("snbim-mainview");//开户链接
-// const footer = document.getElementById("footer");//开户链接
-// const left = document.getElementById("left-col");//开户链接
-const right = document.getElementById("right-col");//开户链接
+const business = document.getElementById("business");
+const today_topic = document.getElementById("today-topic");
+const talks_list = document.getElementById("talks-list");
+const stock_hot = document.getElementById("stock-hot");
+const most_profitable = document.getElementById("most-profitable");
+const fund_hot_list = document.getElementById("fund-hot-list");
+const recommend_user = document.getElementById("recommend-user");
+const reward = document.getElementById("reward");
+const other_service = document.getElementById("other-service");
+const info_report = document.getElementById("info-report");
+const snbim_mainview = document.getElementById("snbim-mainview");
+// const footer = document.getElementById("footer");
+// const left = document.getElementById("left-col");
+const right = document.getElementById("right-col");
+
+const unfold = document.getElementById("unfold");
 
 //初始化全局变量，用于存储数据，popup 里的数据都从这里取
 const popup = {
@@ -113,6 +115,10 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
     //  footer.checked = !!(request.footer==="hide");
     //  left.checked = !!(request.left==="hide");
      right.checked = !!(request.right==="hide");
+
+     //渲染是否全部展开
+     unfold.checked = !!(request.unfold==="unfold");
+
 });
 
 //事件监听 - 添加关键词
@@ -155,3 +161,11 @@ const moduleEventCallback = (e, cmd) => {
 ].forEach(item => {
     item.element.addEventListener("click", e => moduleEventCallback(e, item.cmd));
 });
+
+//事件监听 - 是否全部展开
+unfold.addEventListener("click", function(e){
+    const value = e.target.checked?"unfold":"fold";
+    sendMessageToContentScript({ cmd: "unfold", value }, function(response){
+        // console.log('来自content的回复：'+response);
+    });
+})
