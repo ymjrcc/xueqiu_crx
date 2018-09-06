@@ -20,8 +20,8 @@ const moduleData = [
 	{cmd: "other_service", ls: "xq_crx_other_service", className: "other-service__container"},
 	{cmd: "info_report", ls: "xq_crx_info_report", className: "info-report-wrap"},
 	{cmd: "snbim_mainview", ls: "xq_crx_snbim_mainview", className: "snbim-mainview-wrap"},
-	// {cmd: "footer", ls: "xq_crx_footer", className: "footer"},
-	// {cmd: "left", ls: "xq_crx_left", className: "user__col--lf"},
+	{cmd: "footer", ls: "xq_crx_footer", className: "footer"},
+	{cmd: "left", ls: "xq_crx_left", className: "user__col--lf"},
 	{cmd: "right", ls: "xq_crx_right", className: "home__col--rt"},
 ];
 
@@ -44,8 +44,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 			other_service: localStorage.getItem("xq_crx_other_service"),//其他服务
 			info_report: localStorage.getItem("xq_crx_info_report"),//举报专区
 			snbim_mainview: localStorage.getItem("xq_crx_snbim_mainview"),//右下角聊天
-			// footer: localStorage.getItem("xq_crx_footer"),//底栏
-			// left: localStorage.getItem("xq_crx_left"),//左边栏
+			footer: localStorage.getItem("xq_crx_footer"),//底栏
+			left: localStorage.getItem("xq_crx_left"),//左边栏
 			right: localStorage.getItem("xq_crx_right"),//右边栏
 
 			unfold: localStorage.getItem("xq_crx_unfold"),//是否展开全文
@@ -65,7 +65,11 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
 	}else if(request.type==='module'){//模块配置信息更新后，将 popup 传来的 模块配置信息 存入本地存储中
 		const showOrHide = (ls, className) => {
 			localStorage.setItem(ls, request.value);
-			document.querySelector(`.${className}`).style.display = (request.value==="hide")?"none":"block";
+			if(ls==="xq_crx_footer" || ls==="xq_crx_left"){
+				document.querySelector(`.${className}`).style.visibility = (request.value==="hide")?"hidden":"visible";
+			}else{
+				document.querySelector(`.${className}`).style.display = (request.value==="hide")?"none":"block";
+			}
 		}
 		const m = moduleData.find(item => request.cmd===item.cmd);
 
@@ -156,11 +160,11 @@ setInterval(() => {
 //模块屏蔽
 moduleData.forEach(item => {
 	const hide = localStorage.getItem(item.ls)==="hide";
-	// if(item.cmd!=="footer" && item.cmd!=="left"){
+	if(item.cmd!=="footer" && item.cmd!=="left"){
 		document.querySelector(`.${item.className}`).style.display = hide?"none":"block";
-	// }else{
-		// document.querySelector(`.${item.className}`).style.visibility = hide?"hidden":"visible";
-	// }
+	}else{
+		document.querySelector(`.${item.className}`).style.visibility = hide?"hidden":"visible";
+	}
 });
 
 //热股榜

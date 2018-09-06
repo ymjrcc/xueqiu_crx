@@ -15,8 +15,8 @@ const reward = document.getElementById("reward");
 const other_service = document.getElementById("other-service");
 const info_report = document.getElementById("info-report");
 const snbim_mainview = document.getElementById("snbim-mainview");
-// const footer = document.getElementById("footer");
-// const left = document.getElementById("left-col");
+const footer = document.getElementById("footer");
+const left = document.getElementById("left-col");
 const right = document.getElementById("right-col");
 
 const unfold = document.getElementById("unfold");
@@ -112,8 +112,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse){
      other_service.checked = !!(request.other_service==="hide");
      info_report.checked = !!(request.info_report==="hide");
      snbim_mainview.checked = !!(request.snbim_mainview==="hide");
-    //  footer.checked = !!(request.footer==="hide");
-    //  left.checked = !!(request.left==="hide");
+     footer.checked = !!(request.footer==="hide");
+     left.checked = !!(request.left==="hide");
      right.checked = !!(request.right==="hide");
 
      //渲染是否全部展开
@@ -155,8 +155,8 @@ const moduleEventCallback = (e, cmd) => {
     {element: other_service, cmd: "other_service"},
     {element: info_report, cmd: "info_report"},
     {element: snbim_mainview, cmd: "snbim_mainview"},
-    // {element: footer, cmd: "footer"},
-    // {element: left, cmd: "left"},
+    {element: footer, cmd: "footer"},
+    {element: left, cmd: "left"},
     {element: right, cmd: "right"},
 ].forEach(item => {
     item.element.addEventListener("click", e => moduleEventCallback(e, item.cmd));
