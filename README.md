@@ -29,3 +29,6 @@
 * 屏蔽置顶热门
 * 添加白名单
 * 添加除首页外的页面适配
+
+### 产品截图
+ ![image](https://github.com/ymjrcc/xueqiu_crx/raw/master/src/img/screenshot.png)
